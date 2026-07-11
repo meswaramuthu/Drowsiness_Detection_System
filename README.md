@@ -40,9 +40,43 @@ Traditional drowsiness detection systems rely heavily on expensive, specialized 
 
 ---
 
-## Project Workflow
+## Project Architecture & Workflow
 
+### Architecture Diagram
+
+```mermaid
+graph TD
+    %% Define styles
+    classDef hardware fill:#2d3436,stroke:#b2bec3,stroke-width:2px,color:#fff;
+    classDef frontend fill:#0984e3,stroke:#74b9ff,stroke-width:2px,color:#fff;
+    classDef backend fill:#d63031,stroke:#ff7675,stroke-width:2px,color:#fff;
+    classDef model fill:#6c5ce7,stroke:#a29bfe,stroke-width:2px,color:#fff;
+    classDef output fill:#00b894,stroke:#55efc4,stroke-width:2px,color:#fff;
+
+    %% Nodes
+    WC[Webcam]:::hardware
+    UI[OpenCV UI Dashboard]:::frontend
+    YOLO[YOLO11 Classification Model]:::model
+    FSM[Alert System / FSM]:::backend
+    SNAP[Snapshot Manager]:::output
+    LOG[Logging]:::output
+    SESS[Session Manager]:::output
+
+    %% Connections
+    WC -- "Frames" --> UI
+    UI -- "Preprocessed Frames" --> YOLO
+    YOLO -- "Predictions & Confidence" --> UI
+    YOLO -- "State" --> FSM
+    FSM -- "Trigger Alarm" --> FSM
+    FSM -- "Save Snapshot" --> SNAP
+    FSM -- "Write Log" --> LOG
+    FSM -- "Metrics" --> SESS
+    SESS -- "Session Report" --> LOG
 ```
+
+### High-Level Workflow
+
+```text
        [ Dataset Preparation ]
                   ↓
        [ Model Training (YOLO11) ]
