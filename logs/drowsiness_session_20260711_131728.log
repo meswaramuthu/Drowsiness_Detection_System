@@ -1,0 +1,53 @@
+[2026-07-11 13:17:28] [INFO    ] drowsiness — Log file created: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\logs\drowsiness_session_20260711_131728.log
+[2026-07-11 13:17:28] [INFO    ] drowsiness — ============================================================
+[2026-07-11 13:17:28] [INFO    ] drowsiness —   Drowsiness Detection System — Starting
+[2026-07-11 13:17:28] [INFO    ] drowsiness — ============================================================
+[2026-07-11 13:17:28] [INFO    ] drowsiness — Loading YOLO model from: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\Model\best.pt
+[2026-07-11 13:17:30] [INFO    ] drowsiness — Model loaded — Task: classify, Classes: ['Drowsy', 'Non_Drowsy']
+[2026-07-11 13:17:31] [INFO    ] drowsiness — Opening camera (device index: 0)...
+[2026-07-11 13:17:36] [INFO    ] drowsiness — Camera opened — Resolution: 640x480, FPS: 30
+[2026-07-11 13:17:36] [INFO    ] drowsiness — System ready. Press 'q' or ESC to quit.
+
+[2026-07-11 13:17:41] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:17:41] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131741.jpg
+[2026-07-11 13:17:43] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131743.jpg
+[2026-07-11 13:17:46] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:17:46] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131746.jpg
+[2026-07-11 13:17:51] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:17:51] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131751.jpg
+[2026-07-11 13:17:57] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:17:57] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131757.jpg
+[2026-07-11 13:18:03] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:18:03] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131803.jpg
+[2026-07-11 13:18:09] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:18:09] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131809.jpg
+[2026-07-11 13:18:18] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:18:18] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131818.jpg
+[2026-07-11 13:18:24] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:18:24] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131824.jpg
+[2026-07-11 13:18:27] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131827.jpg
+[2026-07-11 13:18:29] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 40 consecutive frames!
+[2026-07-11 13:18:34] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 102 consecutive frames!
+[2026-07-11 13:18:43] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:18:43] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131843.jpg
+[2026-07-11 13:18:48] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 75 consecutive frames!
+[2026-07-11 13:18:52] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131852.jpg
+[2026-07-11 13:18:53] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 22 consecutive frames!
+[2026-07-11 13:19:02] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:19:02] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131902.jpg
+[2026-07-11 13:19:05] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131905.jpg
+[2026-07-11 13:19:08] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:19:08] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131908.jpg
+[2026-07-11 13:19:13] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 70 consecutive frames!
+[2026-07-11 13:19:16] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131916.jpg
+[2026-07-11 13:19:18] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 15 consecutive frames!
+[2026-07-11 13:19:18] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131918.jpg
+[2026-07-11 13:19:23] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 68 consecutive frames!
+[2026-07-11 13:19:28] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 125 consecutive frames!
+[2026-07-11 13:19:34] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 186 consecutive frames!
+[2026-07-11 13:19:38] [INFO    ] drowsiness — Snapshot saved: C:\Users\Subramani\Desktop\DROWSINESS_DETECTION_SYSTEM\Drowsiness_Detection_System\outputs\drowsy_snapshot_20260711_131938.jpg
+[2026-07-11 13:19:39] [WARNING ] drowsiness — ⚠️  DROWSINESS ALARM — 17 consecutive frames!
+[2026-07-11 13:19:39] [INFO    ] drowsiness — Interrupted by user (Ctrl+C).
+[2026-07-11 13:19:39] [INFO    ] drowsiness — Camera released.
+[2026-07-11 13:19:39] [INFO    ] drowsiness — Application stopped. Goodbye.
+
