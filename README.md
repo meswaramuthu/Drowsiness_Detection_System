@@ -220,4 +220,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Author
 
-*   **Subramani / Meswaramuthu** - *Senior Computer Vision & Software Engineer* - [GitHub Profile](https://github.com/meswaramuthu)
+*   **meswaramuthu** - [GitHub Profile](https://github.com/meswaramuthu)
