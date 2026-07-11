@@ -41,7 +41,9 @@ def generate_alarm_wav(filepath: str) -> None:
         filepath: Destination path for the generated .wav file.
     """
     logger.info(f"Generating alarm sound: {filepath}")
-    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    dir_name = os.path.dirname(filepath)
+    if dir_name:
+        os.makedirs(dir_name, exist_ok=True)
 
     sample_rate = 44100
     duration = 3.0              # Total duration in seconds
@@ -116,23 +118,70 @@ def _play_sound_blocking(filepath: str) -> None:
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Alert Manager
+# Alarm Player & FSM States
+# ──────────────────────────────────────────────────────────────────────────────
+
+from enum import Enum, auto
+import numpy as np
+
+class AlertState(Enum):
+    SAFE = auto()
+    DROWSY = auto()
+
+
+class AlarmPlayer:
+    """
+    Manages background alarm playback loop.
+    Controls thread lifecycle, allowing starting/stopping the alarm dynamically.
+    """
+
+    def __init__(self, sound_path: str):
+        self.sound_path = sound_path
+        self._thread: threading.Thread | None = None
+        self._stop_event = threading.Event()
+
+    def start(self) -> None:
+        """Start playing the alarm sound in a background thread if not already playing."""
+        if self._thread is not None and self._thread.is_alive():
+            return  # Already playing
+        self._stop_event.clear()
+        self._thread = threading.Thread(target=self._run, daemon=True)
+        self._thread.start()
+
+    def stop(self) -> None:
+        """Stop sound playback immediately and terminate the background thread."""
+        self._stop_event.set()
+        # On Windows, stop any active winsound play immediately to stop the blocking thread
+        try:
+            import winsound
+            winsound.PlaySound(None, winsound.SND_PURGE)
+        except Exception:
+            pass
+
+    def _run(self) -> None:
+        while not self._stop_event.is_set():
+            _play_sound_blocking(self.sound_path)
+            # Short sleep between replays to prevent high CPU utilization
+            time.sleep(0.1)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Alert Manager (FSM)
 # ──────────────────────────────────────────────────────────────────────────────
 
 class AlertManager:
     """
-    Manages the drowsiness alerting logic:
-      - Counts consecutive drowsy frames.
-      - Triggers the alarm only after the threshold is exceeded.
-      - Respects a cooldown period between alarms.
-      - Plays alarm sound asynchronously (non-blocking).
+    Manages the drowsiness alerting logic using a Finite State Machine.
+    
+    States:
+      - SAFE: The driver is awake or under the consecutive frames threshold.
+      - DROWSY: The driver is confirmed drowsy and alarm is active.
 
-    Usage:
-        alert = AlertManager()
-        # In the frame loop:
-        alert.update(is_drowsy=True)
-        if alert.is_alarm_active:
-            draw_alarm_overlay()
+    Responsibilities:
+      - Transitions SAFE -> DROWSY when consecutive frames threshold is met.
+      - Transitions DROWSY -> SAFE when recovery (is_drowsy=False) occurs.
+      - Ensures only one warning log and one snapshot are triggered per event.
+      - Controls continuous alarm playback while in DROWSY state.
     """
 
     def __init__(
@@ -146,10 +195,11 @@ class AlertManager:
         self._sound_path = sound_path
 
         # State tracking
+        self._state: AlertState = AlertState.SAFE
         self._consecutive_drowsy: int = 0
-        self._is_alarm_active: bool = False
-        self._last_alarm_time: float = 0.0
-        self._alarm_thread: threading.Thread | None = None
+        
+        # Asynchronous alarm player
+        self._player = AlarmPlayer(self._sound_path)
 
         # Ensure the alarm sound file exists
         self._ensure_sound_file()
@@ -162,32 +212,73 @@ class AlertManager:
 
     # ── Public Interface ──────────────────────────────────────────────────
 
-    def update(self, is_drowsy: bool) -> None:
+    def update(self, is_drowsy: bool, frame: np.ndarray | None = None) -> None:
         """
-        Call once per frame to update the alert state.
+        Call once per frame to update the alert state FSM.
 
         Args:
             is_drowsy: True if the current frame was classified as drowsy.
+            frame:     The current raw BGR frame from camera (used for snapshot).
         """
-        if is_drowsy:
-            self._consecutive_drowsy += 1
-        else:
-            self._consecutive_drowsy = 0
-            self._is_alarm_active = False
+        if self._state == AlertState.SAFE:
+            if is_drowsy:
+                self._consecutive_drowsy += 1
+                if self._consecutive_drowsy >= self._frames_threshold:
+                    # Transition: SAFE -> DROWSY
+                    self._state = AlertState.DROWSY
+                    logger.warning(
+                        f"⚠️  [STATE CHANGE: SAFE -> DROWSY] Drowsiness detected! "
+                        f"Sustained for {self._consecutive_drowsy} frames."
+                    )
+                    
+                    # 1. Start the alarm
+                    self._player.start()
+                    
+                    # 2. Save one snapshot
+                    if frame is not None and config.SAVE_SNAPSHOTS:
+                        try:
+                            from camera import Camera
+                            Camera.save_snapshot(frame)
+                        except Exception as e:
+                            logger.error(f"Failed to save drowsiness snapshot: {e}")
+            else:
+                self._consecutive_drowsy = 0
 
-        # Check if we should trigger the alarm
-        if self._consecutive_drowsy >= self._frames_threshold:
-            self._trigger_alarm()
+        elif self._state == AlertState.DROWSY:
+            if is_drowsy:
+                # While still DROWSY:
+                # - Keep alarm player running (it loops internally)
+                # - Do NOT trigger additional alarms
+                # - Do NOT save repeated snapshots
+                self._consecutive_drowsy += 1
+                self._player.start()  # Safe check: no-op if already running
+            else:
+                # Transition: DROWSY -> SAFE
+                self._state = AlertState.SAFE
+                logger.info("✅ [STATE CHANGE: DROWSY -> SAFE] Driver recovered/awake.")
+                
+                # 1. Stop the alarm
+                self._player.stop()
+                
+                # 2. Reset all counters
+                self._consecutive_drowsy = 0
 
     def reset(self) -> None:
-        """Reset all alert state (e.g., when restarting monitoring)."""
+        """Reset the FSM to SAFE state and stop alarm player."""
+        logger.info("Resetting AlertManager state to SAFE.")
+        self._state = AlertState.SAFE
         self._consecutive_drowsy = 0
-        self._is_alarm_active = False
+        self._player.stop()
+
+    @property
+    def state(self) -> AlertState:
+        """Get the current AlertState of the FSM."""
+        return self._state
 
     @property
     def is_alarm_active(self) -> bool:
-        """True if an alarm is currently triggered and active."""
-        return self._is_alarm_active
+        """True if the system is currently in the DROWSY state."""
+        return self._state == AlertState.DROWSY
 
     @property
     def consecutive_drowsy_frames(self) -> int:
@@ -198,34 +289,10 @@ class AlertManager:
     def drowsy_progress(self) -> float:
         """
         Progress toward alarm trigger, as a float from 0.0 to 1.0.
-        Useful for rendering a "building up" visual indicator.
         """
+        if self._state == AlertState.DROWSY:
+            return 1.0
         if self._frames_threshold <= 0:
             return 1.0
         return min(1.0, self._consecutive_drowsy / self._frames_threshold)
 
-    # ── Private Methods ───────────────────────────────────────────────────
-
-    def _trigger_alarm(self) -> None:
-        """Trigger the alarm if cooldown has elapsed."""
-        now = time.time()
-        elapsed = now - self._last_alarm_time
-
-        self._is_alarm_active = True
-
-        if elapsed < self._cooldown_seconds:
-            return  # Still in cooldown — skip sound playback
-
-        self._last_alarm_time = now
-        logger.warning(
-            f"⚠️  DROWSINESS ALARM — {self._consecutive_drowsy} consecutive frames!"
-        )
-
-        # Play the alarm sound in a separate thread to avoid blocking the frame loop
-        if self._alarm_thread is None or not self._alarm_thread.is_alive():
-            self._alarm_thread = threading.Thread(
-                target=_play_sound_blocking,
-                args=(self._sound_path,),
-                daemon=True,
-            )
-            self._alarm_thread.start()

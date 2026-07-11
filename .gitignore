@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# User output directories (incident logs and video snapshots)
+outputs/
+output/
+logs/
+*.log
+
+# Audio files (auto-generated)
+sounds/alarm.wav
+
+# IDE settings and environment configuration
+.vscode/
+.idea/
+.env
+.venv/
+venv/
+env/
